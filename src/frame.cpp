@@ -81,19 +81,19 @@ void Frame::setKeyPoints()
 
   std::for_each(fts_.begin(), fts_.end(), [&](Feature* ftr){ if(ftr->point != NULL) checkKeyPoints(ftr); });
 }
-
+//kdq：找到中间和最边角的五个点？
 void Frame::checkKeyPoints(Feature* ftr)
 {
   const int cu = cam_->width()/2;
   const int cv = cam_->height()/2;
-
+  //kdq：距离中心最近的点
   // center pixel
   if(key_pts_[0] == NULL)
     key_pts_[0] = ftr;
   else if(std::max(std::fabs(ftr->px[0]-cu), std::fabs(ftr->px[1]-cv))
         < std::max(std::fabs(key_pts_[0]->px[0]-cu), std::fabs(key_pts_[0]->px[1]-cv)))
     key_pts_[0] = ftr;
-
+  //kdq：最右下角的点
   if(ftr->px[0] >= cu && ftr->px[1] >= cv)
   {
     if(key_pts_[1] == NULL)
@@ -102,6 +102,7 @@ void Frame::checkKeyPoints(Feature* ftr)
           > (key_pts_[1]->px[0]-cu) * (key_pts_[1]->px[1]-cv))
       key_pts_[1] = ftr;
   }
+  //kdq：最右上角的点
   if(ftr->px[0] >= cu && ftr->px[1] < cv)
   {
     if(key_pts_[2] == NULL)
@@ -110,6 +111,7 @@ void Frame::checkKeyPoints(Feature* ftr)
           < (key_pts_[2]->px[0]-cu) * (key_pts_[2]->px[1]-cv))
       key_pts_[2] = ftr;
   }
+  //kdq：最左上角的点
   if(ftr->px[0] < cu && ftr->px[1] < cv)
   {
     if(key_pts_[3] == NULL)
@@ -118,6 +120,7 @@ void Frame::checkKeyPoints(Feature* ftr)
           > (key_pts_[3]->px[0]-cu) * (key_pts_[3]->px[1]-cv))
       key_pts_[3] = ftr;
   }
+  //kdq：最左下角的点
   if(ftr->px[0] < cu && ftr->px[1] >= cv)
   {
     if(key_pts_[4] == NULL)

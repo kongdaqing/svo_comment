@@ -144,6 +144,7 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
 
   // create new frame
   SVO_START_TIMER("pyramid_creation");
+  //kdq:创建图像金字塔
   new_frame_.reset(new Frame(cam_, img.clone(), timestamp));
   SVO_STOP_TIMER("pyramid_creation");
 
@@ -234,6 +235,7 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
 FrameHandlerMono::UpdateResult FrameHandlerMono::processFirstFrame()
 {
   new_frame_->T_f_w_ = SE3(Matrix3d::Identity(), Vector3d::Zero());
+  //kdq:提取特征点，检查数量是否满足要求
   if(klt_homography_init_.addFirstFrame(new_frame_) == initialization::FAILURE)
     return RESULT_NO_KEYFRAME;
   new_frame_->setKeyframe();

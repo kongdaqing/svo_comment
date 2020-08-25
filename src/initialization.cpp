@@ -32,6 +32,7 @@ namespace initialization {
 InitResult KltHomographyInit::addFirstFrame(FramePtr frame_ref)
 {
   reset();
+  //kdq：这里不仅提取了最大得分的特征点，而且提取了线特征（heyijia添加）
   detectFeatures(frame_ref,fts_type_, px_ref_, f_ref_);
   if(px_ref_.size() < 100)
   {
@@ -39,6 +40,7 @@ InitResult KltHomographyInit::addFirstFrame(FramePtr frame_ref)
     return FAILURE;
   }
 
+  //kdq:如果图像中间特征点数量少于50个则不进行初始化
   int fts_center_img = 0;
   for(size_t i=0, i_max=px_ref_.size(); i<i_max; ++i)
   {
@@ -65,18 +67,20 @@ InitResult KltHomographyInit::addFirstFrame(FramePtr frame_ref)
 InitResult KltHomographyInit::addSecondFrame(FramePtr frame_cur)
 {
   //trackKlt(frame_ref_, frame_cur, px_ref_, px_cur_, f_ref_, f_cur_, disparities_);
+  //kdq：pyramidLK光流追踪
   trackKlt(frame_ref_, frame_cur,fts_type_, px_ref_, px_cur_, f_ref_, f_cur_, disparities_,img_prev_,px_prev_);
   SVO_INFO_STREAM("Init: KLT tracked "<< disparities_.size() <<" features");
-
+  //kdq：追踪到特征点数量太少则初始化失败
   if(disparities_.size() < Config::initMinTracked())
     return FAILURE;
 
   double disparity = svo::getMedian(disparities_);
 
   SVO_INFO_STREAM("Init: KLT "<<disparity<<"px average disparity.");
+  //kdq：视差小于一定值也初始化失败
   if(disparity < Config::initMinDisparity())
     return NO_KEYFRAME;
-
+  //kdq:通过计算视差标准差来选择是用本质矩阵还是h矩阵来初始化
   double sum = std::accumulate(disparities_.begin(), disparities_.end(), 0.0);
   double mean = sum / disparities_.size();
   double sq_sum = std::inner_product(disparities_.begin(), disparities_.end(), disparities_.begin(), 0.0);

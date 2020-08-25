@@ -82,6 +82,7 @@ void FastDetector::detect(
   {
     const int scale = (1<<L);
     vector<fast::fast_xy> fast_corners;
+    //kdq:使用sse加速
 #if __SSE2__
       fast::fast_corner_detect_10_sse2(
           (fast::fast_byte*) img_pyr[L].data, img_pyr[L].cols,
@@ -107,12 +108,14 @@ void FastDetector::detect(
       if(grid_occupancy_[k])
         continue;
       const float score = fast::shiTomasiScore(img_pyr[L], xy.x, xy.y);
+      //kdq：取金字塔里shiTomasi得分最高的特征点
       if(score > corners.at(k).score)
         corners.at(k) = Corner(xy.x*scale, xy.y*scale, score, L, 0.0f);
     }
   }
 
   int debug=0;
+  //kdq：最好还要去除得分不高的特征点
   // Create feature for every corner that has high enough corner score
   std::for_each(corners.begin(), corners.end(), [&](Corner& c) {
     if(c.score > detection_threshold)
