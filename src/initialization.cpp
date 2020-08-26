@@ -67,7 +67,7 @@ InitResult KltHomographyInit::addFirstFrame(FramePtr frame_ref)
 InitResult KltHomographyInit::addSecondFrame(FramePtr frame_cur)
 {
   //trackKlt(frame_ref_, frame_cur, px_ref_, px_cur_, f_ref_, f_cur_, disparities_);
-  //kdq：pyramidLK光流追踪
+  //kdq：LKPyramid光流追踪
   trackKlt(frame_ref_, frame_cur,fts_type_, px_ref_, px_cur_, f_ref_, f_cur_, disparities_,img_prev_,px_prev_);
   SVO_INFO_STREAM("Init: KLT tracked "<< disparities_.size() <<" features");
   //kdq：追踪到特征点数量太少则初始化失败
@@ -91,7 +91,7 @@ InitResult KltHomographyInit::addSecondFrame(FramePtr frame_cur)
   {
     method_flag = 2;   // E method
   }
-
+  //kdq:计算本质矩阵或者单应矩阵
   computeHomography(
       f_ref_, f_cur_,
       frame_ref_->cam_->errorMultiplier2(), Config::poseOptimThresh(),
@@ -362,7 +362,7 @@ void computeHomography(
 
   SE3 Tcf(R,t);
   T_cur_from_ref = Tcf;
-
+  //kdq:计算两边的重投影误差,然后三角化特征点
   svo::computeInliers(f_cur, f_ref,
                      R, t,
                      reprojection_threshold, focal_length,
