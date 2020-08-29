@@ -149,6 +149,8 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
   SVO_STOP_TIMER("pyramid_creation");
 
   // process frame
+  //KDQ:执行流程
+  //KDQ: 处理第一帧---> 处理第二帧 ---> 处理普通帧
   UpdateResult res = RESULT_FAILURE;
   if(stage_ == STAGE_DEFAULT_FRAME)
     res = processFrame();
@@ -283,6 +285,8 @@ FrameHandlerBase::UpdateResult FrameHandlerMono::processFrame()
                            30, SparseImgAlign::GaussNewton, false, false);
   size_t img_align_n_tracked = img_align.run(last_frame_, new_frame_);
 */
+  //KDQ:第一步
+  //KDQ:逆向组合光流法计算当前帧初始位姿
   SparseAlign img_align(svo::Config::kltMaxLevel(), svo::Config::kltMinLevel(),30, false, false);
   size_t img_align_n_tracked =img_align.run(last_frame_, new_frame_);
 

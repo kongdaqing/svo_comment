@@ -115,6 +115,8 @@ public:
 
   /// Frame jacobian for projection of 3D point in (f)rame coordinate to
   /// unit plane coordinates uv (focal length = 1).
+  //KDQ:公式推导参照
+  //https://github.com/kongdaqing/SLAM-KDQ/tree/master/VIO/SVO/SVO%E8%AF%A6%E7%BB%86%E8%A7%A3%E8%AF%BB-%E8%B4%BA%E4%B8%80%E4%BD%B3
   inline static void jacobian_xyz2uv(
       const Vector3d& xyz_in_f,
       Matrix<double,2,6>& J)

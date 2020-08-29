@@ -25,7 +25,8 @@ namespace feature_detection {
 void saveMatToCsv(cv::Mat data, std::string filename)
 {
     std::ofstream outputFile(filename.c_str());
-    outputFile << cv::format(data,"CSV")<<std::endl;
+    std::string dataFormat = "CSV";
+    outputFile << cv::format(data,dataFormat.c_str()) << std::endl;
     outputFile.close();
 }
 

@@ -109,6 +109,7 @@ void SparseAlign::precomputeReferencePatches()
     const Vector3d xyz_ref((*it)->f*depth);
 
     // evaluate projection jacobian
+    //KDQ:这里计算像素点相对于位姿摄动量的jacobian
     Matrix<double,2,6> frame_jac;
     Frame::jacobian_xyz2uv(xyz_ref, frame_jac);
 
@@ -155,7 +156,7 @@ double SparseAlign::computeResiduals(
 
   if(linearize_system && display_)
     resimg_ = cv::Mat(cur_img.size(), CV_32F, cv::Scalar(0));
-
+  //KDQ:逆向组合光流,可以事先计算jacobian,节省很多时间
   if(have_ref_patch_cache_ == false)
     precomputeReferencePatches();
 

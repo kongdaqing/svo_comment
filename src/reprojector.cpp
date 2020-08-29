@@ -98,8 +98,9 @@ void Reprojector::reprojectMap(
       if((*it_ftr)->point->last_projected_kf_id_ == frame->id_)
         continue;
       (*it_ftr)->point->last_projected_kf_id_ = frame->id_;
+      //KDQ:取视角重叠参考帧上的点,将这些点3D位置投影到当前帧上,看看是否超出边界
       if(reprojectPoint(frame, (*it_ftr)->point))
-        overlap_kfs.back().second++;
+        overlap_kfs.back().second++;//KDQ:如果在的话统计该参考帧与当前帧的共视特征点数量
     }
   }
   SVO_STOP_TIMER("reproject_kfs");
